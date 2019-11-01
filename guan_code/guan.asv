@@ -152,7 +152,7 @@ function pushbutton2_Callback(hObject, eventdata, handles) %%提取特征
 % handles    structure with handles and user data (see GUIDATA)
 global im flgim feature
 global long   %%设置特征大小
-long =14;
+long =28;
 set(handles.axes1,'visible','off');
 str= getframe(handles.axes1);
 set(handles.axes1,'visible','on');
@@ -237,10 +237,10 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%载入数据集
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global long
-directory = uigetdir('','选择指定文件夹：');%弹出对话框手动指定文件夹
-num = 10;%载入样本个数
+directory = uigetdir('','选择指定文件夹：');%弹出对话框手动指定文件夹，本例即为找到名为组件信号的文件夹
+num = 100;
 train =zeros(num,long^2);
-for i = 1:num
+for i = 1
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
 fid = imread(filepath);%打开文件
 train(i,:)= Getfeature_g_train(fid,long);
@@ -249,92 +249,10 @@ train
 
 
 % --- Executes on button press in pushbutton4.
-function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
+function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%% 最小错误概率的Bayes方法
-% --------------------------------------------------------------------
-global feature
-load('samplelib.mat');
-x = zeros(1,36);    %待测样品
-xmeans = zeros(1,36);   %样品的均值
- S = zeros(36,36);   %协方差矩阵
-S_ =zeros(36,36);   %S的逆矩阵
-pw = zeros(1,10);    %先验概率P(wj)=n(i)/N
-hx = zeros(1,10);   %判别函数
-t = zeros(1,36);
-mode = [];
-N = 0;
-% 求先验概率
-for i = 1:10
-    N = pattern(i).num;  %样品总数
-end
-for i = 1:10
-    pw(i) = pattern(i).num/N;
-end
-%求样品平均值
-for n = 1:10  %数字类1-10
-    pnum = pattern(n).num;%每一类中的样本个数
-    for k = 1:pnum
-        for i = 1:36
-            if pattern(n).feature(k,i)>0.1   %设置的阈值为0.1，0为格子内完全没有输入
-                xmeans(i) = xmeans(i)+1;
-            else
-                xmeans(i) = xmeans(i)+0;
-            end
-        end
-    end
-    for i = 1:36
-        xmeans(i) = xmeans(i)/pnum;
-    end
-    %求协方差
-    for i = 1:pnum
-        for j = 1:36
-            if pattern(n).feature(i,j)>0.1
-                mode(i,j) = 1.04;
-            else
-                mode(i,j) = 0;
-            end
-        end
-    end
-    for i = 1:36
-        for j = 1:36
-            s = 0;
-            for k = 1:pnum
-                s = s+(mode(k,i)-xmeans(i))*(mode(k,j)-xmeans(j)); 
-            end
-            s = s/(pnum - 1);
-            S(i,j) = s;
-        end
-    end
-    %求S的逆矩阵
-    S_ = pinv(S);   %求逆函数pinv
-    dets = det(S);  %求行列式的值，函数det
-    % 求判别函数
-    for i = 1:36
-        if feature(i)>0.1
-            x(i) = 1;
-        else
-            x(i) = 0;
-        end
-    end
-    for i = 1:36
-        x(i) = x(i) - xmeans(i);
-    end
-    t = x*S_;
-    t1 = t*x';
-    t2 = log(pw(n));
-    t3 = log(dets+1);
-    hx(n) = -t1/2+t2-t3/2;
-end
-[tem,num] = max(hx);    %找到其中的最大值
-num = num-1;
-
-str = num2str(num);
-str = ['应用最小错误率的Bayes方法识别结果：' str];
-msgbox(str,'结果：');
-
 
 
 % --- Executes on selection change in popupmenu1.

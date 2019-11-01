@@ -1,6 +1,6 @@
 function feature = Getfeature_g(im,long)
 %% 改进版文字边缘检测
-[row,col] = find(im==0); %得到图片的上下左右的边界
+[row,col] = find(im~=255); %得到图片的上下左右的边界
 bian=max(max(row)-min(row),max(col)-min(col));
 center_row=min(row)+fix((max(row)-min(row))./2);
 center_col=min(col)+fix((max(col)-min(col))./2);
