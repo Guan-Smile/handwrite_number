@@ -92,10 +92,11 @@ function figure1_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-global flg style color im flgim;   %flg代表画笔标志，flgim代表画笔标志，mark和rgb代表线形和颜色
+global flg style color  LineWidth im flgim;   %flg代表画笔标志，flgim代表画笔标志，mark和rgb代表线形和颜色
 flg = 0;  %初始情况下鼠标没有按下
 style = '-';  %初始情况下为线性
 color = [0,0,0];  %初始情况下为黑色
+ LineWidth = 15;
 im = [];   %储存图像
 flgim = 1;  %画图笔启用标识符
 
@@ -106,14 +107,14 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global flg x0 y0 x y style color flgim;
+global flg x0 y0 x y style color flgim  LineWidth;
 flg = 1;
 if flg&&flgim
 axes(handles.axes1)
 position = get(gca,'CurrentPoint');
 x = position(1,1);
 y = position(1,2);
-line(x,y,'LineStyle',style,'color',color,'linewidth',8);
+line(x,y,'LineStyle',style,'color',color,'linewidth', LineWidth);
 x0 = x;
 y0 = y;
 end
@@ -133,14 +134,14 @@ function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global flg x0 y0 x y style color flgim;
+global flg x0 y0 x y style color flgim  LineWidth;
 if flg&&flgim
     x0 = x;
     y0 = y;
     position= get(gca,'CurrentPoint');
     x = position(1,1);
     y = position(1,2);
-    line([x0 x],[y0 y],'LineStyle',style,'color',color,'linewidth',5);
+    line([x0 x],[y0 y],'LineStyle',style,'color',color,'linewidth', LineWidth);
 end
     
 
@@ -152,7 +153,7 @@ function pushbutton2_Callback(hObject, eventdata, handles) %%提取特征
 % handles    structure with handles and user data (see GUIDATA)
 global im flgim feature
 global long   %%设置特征大小
-long =14;
+long =7;
 set(handles.axes1,'visible','off');
 str= getframe(handles.axes1);
 set(handles.axes1,'visible','on');
@@ -232,21 +233,26 @@ end
 
 
 % --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)%%载入数据集
+function pushbutton3_Callback(hObject, eventdata, handles)%%重新载入数据集(用于改变训练样本大小)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global long
+global long train
+long = 7;
 directory = uigetdir('','选择指定文件夹：');%弹出对话框手动指定文件夹
-num = 10;%载入样本个数
+num = 200;%载入样本个数
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
 fid = imread(filepath);%打开文件
 train(i,:)= Getfeature_g_train(fid,long);
 end
-train
-
+[filename,PathName] = uigetfile('*.*','选择测试图片数据文件t10k-images.idx3-ubyte');
+labels = loadMNISTLabels(filename);
+disp(labels(1:10));
+train_label = labels(1:num);
+save([PathName,'data_train.mat'],'train','train_label')%保存新的训练数据集合测试数据集
+%load('../data.mat')
 
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
@@ -255,72 +261,81 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
 % handles    structure with handles and user data (see GUIDATA)
 %% 最小错误概率的Bayes方法
 % --------------------------------------------------------------------
-global feature
-load('samplelib.mat');
-x = zeros(1,36);    %待测样品
-xmeans = zeros(1,36);   %样品的均值
- S = zeros(36,36);   %协方差矩阵
-S_ =zeros(36,36);   %S的逆矩阵
+global feature long
+Tr_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train.mat');
+num_all_X=long^2;
+x = zeros(1,num_all_X);    %待测样品
+xmeans = zeros(1,num_all_X);   %样品的均值
+ S = zeros(num_all_X,num_all_X);   %协方差矩阵
+S_ =zeros(num_all_X,num_all_X);   %S的逆矩阵
 pw = zeros(1,10);    %先验概率P(wj)=n(i)/N
 hx = zeros(1,10);   %判别函数
-t = zeros(1,36);
+t = zeros(1,num_all_X);
 mode = [];
 N = 0;
-% 求先验概率
-for i = 1:10
-    N = pattern(i).num;  %样品总数
+%% 求先验概率
+[Cls,Pos ]=sort(Tr_all.train_label);
+Px=tabulate(Cls)  
+pw = Px(:,3)./100;
+%% 对train数据进行排序
+train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
+flg=1;
+figure();%PLOT
+
+for kk=1:10
+Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
+Sum{kk} = sum(Tra_cell{kk});
+flg = flg+Px(kk,2);
+
+subplot(3,4,kk)
+hold on 
+mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
+title(['数字',num2str(kk-1,'%d'),'提取的特征']);
 end
-for i = 1:10
-    pw(i) = pattern(i).num/N;
+
+%% 求样品平均值
+for num = 1:10  %数字类1-10
+%     pnum = Px(num,2);%每一类中的样本个数
+    xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}中已经进行除当前类样本数
 end
-%求样品平均值
-for n = 1:10  %数字类1-10
-    pnum = pattern(n).num;%每一类中的样本个数
-    for k = 1:pnum
-        for i = 1:36
-            if pattern(n).feature(k,i)>0.1   %设置的阈值为0.1，0为格子内完全没有输入
-                xmeans(i) = xmeans(i)+1;
-            else
-                xmeans(i) = xmeans(i)+0;
-            end
-        end
-    end
-    for i = 1:36
-        xmeans(i) = xmeans(i)/pnum;
-    end
-    %求协方差
-    for i = 1:pnum
-        for j = 1:36
-            if pattern(n).feature(i,j)>0.1
-                mode(i,j) = 1.04;
-            else
-                mode(i,j) = 0;
-            end
-        end
-    end
-    for i = 1:36
-        for j = 1:36
-            s = 0;
-            for k = 1:pnum
-                s = s+(mode(k,i)-xmeans(i))*(mode(k,j)-xmeans(j)); 
-            end
-            s = s/(pnum - 1);
-            S(i,j) = s;
-        end
-    end
+for n=1:10
+     pnum = Px(n,2);%每一类中的样本个数
+    
+%     %求协方差
+%     for i = 1:pnum  %~=1-10
+%         for j = 1:long^2 % 1:196
+%             if Tra_cell{n}(i,j)>0.1
+%                 mode(i,j) = 1.04;
+%             else
+%                 mode(i,j) = 0;
+%             end
+%         end
+%     end
+%     for i = 1:long^2
+%         for j = 1:long^2
+%             s = 0;
+%             for k = 1:pnum
+%                 s = s+(mode(k,i)-xmeans(i))*(mode(k,j)-xmeans(j)); 
+%             end
+%             s = s/(pnum - 1);
+%             S(i,j) = s;
+%         end
+%     end
+
+  S= cov(Tra_cell{n}-xmeans(n,:));%[196,196]类型一中所有样本的协方差。
     %求S的逆矩阵
     S_ = pinv(S);   %求逆函数pinv
     dets = det(S);  %求行列式的值，函数det
     % 求判别函数
-    for i = 1:36
+    for i = 1:long^2
         if feature(i)>0.1
             x(i) = 1;
         else
             x(i) = 0;
         end
     end
-    for i = 1:36
-        x(i) = x(i) - xmeans(i);
+    for i = 1:long^2
+        x(i) = x(i) - xmeans(n,i);
     end
     t = x*S_;
     t1 = t*x';
