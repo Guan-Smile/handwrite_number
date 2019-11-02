@@ -96,7 +96,7 @@ global flg style color  LineWidth im flgim;   %flg´ú±í»­±Ê±êÖ¾£¬flgim´ú±í»­±Ê±êÖ
 flg = 0;  %³õÊ¼Çé¿öÏÂÊó±êÃ»ÓÐ°´ÏÂ
 style = '-';  %³õÊ¼Çé¿öÏÂÎªÏßÐÔ
 color = [0,0,0];  %³õÊ¼Çé¿öÏÂÎªºÚÉ«
- LineWidth = 15;
+ LineWidth = 10;
 im = [];   %´¢´æÍ¼Ïñ
 flgim = 1;  %»­Í¼±ÊÆôÓÃ±êÊ¶·û
 
@@ -153,7 +153,7 @@ function pushbutton2_Callback(hObject, eventdata, handles) %%ÌáÈ¡ÌØÕ÷
 % handles    structure with handles and user data (see GUIDATA)
 global im flgim feature
 global long   %%ÉèÖÃÌØÕ÷´óÐ¡
-long =7;
+long = 14;%¸Älong
 set(handles.axes1,'visible','off');
 str= getframe(handles.axes1);
 set(handles.axes1,'visible','on');
@@ -238,9 +238,9 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØÐÂÔØÈëÊý¾Ý¼¯(ÓÃÓÚ¸
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global long train
-long = 7;
+long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼þ¼Ð£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼þ¼Ð
-num = 200;%ÔØÈëÑù±¾¸öÊý
+num = 400;%ÔØÈëÑù±¾¸öÊý
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% ¶ÔtrainÊý¾Ý½øÐÐÅÅÐò
 train_oder=Tr_all.train(Pos,:);%%½«Êý¾Ý¼¯°´ÕÕ0-9ÅÅÐò
 flg=1;
-figure();%PLOT
+% figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
 
-subplot(3,4,kk)
-hold on 
-mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
-title(['Êý×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
+% subplot(3,4,kk)
+% hold on 
+% mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
+% title(['Êý×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
 end
 
 %% ÇóÑùÆ·Æ½¾ùÖµ
@@ -298,6 +298,11 @@ for num = 1:10  %Êý×ÖÀà1-10
 %     pnum = Px(num,2);%Ã¿Ò»ÀàÖÐµÄÑù±¾¸öÊý
     xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}ÖÐÒÑ¾­½øÐÐ³ýµ±Ç°ÀàÑù±¾Êý
 end
+
+result=[];
+for kkk =1:10
+%      feature = [Tra_cell{kkk}(3,:)];
+     feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%Ã¿Ò»ÀàÖÐµÄÑù±¾¸öÊý
     
@@ -327,22 +332,34 @@ for n=1:10
     S_ = pinv(S);   %ÇóÄæº¯Êýpinv
     dets = det(S);  %ÇóÐÐÁÐÊ½µÄÖµ£¬º¯Êýdet
     % ÇóÅÐ±ðº¯Êý
+%     feature = [Tra_cell{7}(3,:)];
     for i = 1:long^2
         if feature(i)>0.1
             x(i) = 1;
         else
             x(i) = 0;
         end
+         if xmeans(n,i)>0.1
+            xmeans_g(n,i) = 1;
+        else
+          xmeans_g(n,i) = 0;
+        end
     end
     for i = 1:long^2
-        x(i) = x(i) - xmeans(n,i);
+        x(i) = x(i) - xmeans_g(n,i);
     end
     t = x*S_;
     t1 = t*x';
     t2 = log(pw(n));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
+    result(kkk,n)=hx(n);
 end
+[tem,num] = max(hx);
+num
+
+end
+result
 [tem,num] = max(hx);    %ÕÒµ½ÆäÖÐµÄ×î´óÖµ
 num = num-1;
 

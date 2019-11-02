@@ -282,7 +282,7 @@ for n = 1:10  %数字类1-10
     S_ = pinv(S);   %求逆函数pinv
     dets = det(S);  %求行列式的值，函数det
     % 求判别函数
-  
+    
     for i = 1:36
         if feature(i)>0.1
             x(i) = 1;
