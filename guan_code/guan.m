@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% 对train数据进行排序
 train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
 flg=1;
-figure();%PLOT
+% figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
-
-subplot(3,4,kk)
-hold on 
-mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
-title(['数字',num2str(kk-1,'%d'),'提取的特征']);
+% 
+% subplot(3,4,kk)
+% hold on 
+% mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
+% title(['数字',num2str(kk-1,'%d'),'提取的特征']);
 end
 
 %% 求样品平均值
@@ -299,10 +299,11 @@ for num = 1:10  %数字类1-10
     xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}中已经进行除当前类样本数
 end
 
+
 result=[];
 for kkk =1:10
-%      feature = [Tra_cell{kkk}(2,:)];
-     feature= xmeans(kkk,:);
+     feature = [Tra_cell{kkk}(2,:)];
+% %      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%每一类中的样本个数
     
@@ -327,30 +328,31 @@ for n=1:10
 %         end
 %     end
 
-  S= cov(Tra_cell{n}-xmeans(n,:));%[196,196]类型一中所有样本的协方差。
+   copy=Tra_cell{n};
+    
+
+  S= cov(copy-xmeans(n,:));%[196,196]类型一中所有样本的协方差。
     %求S的逆矩阵
     S_ = pinv(S);   %求逆函数pinv
     dets = det(S);  %求行列式的值，函数det
     % 求判别函数
 %     feature = [Tra_cell{7}(3,:)];
-%     for i = 1:long^2
-%         if feature(i)>0.1
-%             x(i) = 1;
-%         else
-%             x(i) = 0;
-%         end
-%          if xmeans(n,i)>0.1
-%             xmeans_g(n,i) = 1;
-%         else
-%           xmeans_g(n,i) = 0;
-%         end
-%     end
     for i = 1:long^2
-        x(i) = feature(i) - xmeans(n,i);
+        if feature(i)>0.1
+            x(i) = 1;
+        else
+            x(i) = 0;
+        end
+         if xmeans(n,i)>0.1
+            xmeans_g(n,i) = 1;
+        else
+            xmeans_g(n,i)= 0;
+        end
+        x(i) = x(i) - xmeans_g(n,i);
     end
     t = x*S_;
     t1 = t*x';
-    t2 = log(pw(n));
+    t2 = log(pw(1));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
     result(kkk,n)=hx(n);

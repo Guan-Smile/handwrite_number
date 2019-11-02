@@ -153,7 +153,7 @@ function pushbutton2_Callback(hObject, eventdata, handles) %%ÌáÈ¡ÌØÕ÷
 % handles    structure with handles and user data (see GUIDATA)
 global im flgim feature
 global long   %%ÉèÖÃÌØÕ÷´óĞ¡
-long = 5;%¸Älong
+long = 14;%¸Älong
 set(handles.axes1,'visible','off');
 str= getframe(handles.axes1);
 set(handles.axes1,'visible','on');
@@ -238,7 +238,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØĞÂÔØÈëÊı¾İ¼¯(ÓÃÓÚ¸
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global long train
-long = 5;%¸Älong
+long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼ş¼Ğ£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼ş¼Ğ
 num = 400;%ÔØÈëÑù±¾¸öÊı
 train =zeros(num,long^2);
@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% ¶ÔtrainÊı¾İ½øĞĞÅÅĞò
 train_oder=Tr_all.train(Pos,:);%%½«Êı¾İ¼¯°´ÕÕ0-9ÅÅĞò
 flg=1;
-figure();%PLOT
+% figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
-
-subplot(3,4,kk)
-hold on 
-mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
-title(['Êı×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
+% 
+% subplot(3,4,kk)
+% hold on 
+% mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
+% title(['Êı×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
 end
 
 %% ÇóÑùÆ·Æ½¾ùÖµ
@@ -299,10 +299,11 @@ for num = 1:10  %Êı×ÖÀà1-10
     xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}ÖĞÒÑ¾­½øĞĞ³ıµ±Ç°ÀàÑù±¾Êı
 end
 
+
 result=[];
 for kkk =1:10
-     feature = [Tra_cell{kkk}(3,:)];
-     
+     feature = [Tra_cell{kkk}(2,:)];
+%      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%Ã¿Ò»ÀàÖĞµÄÑù±¾¸öÊı
     
@@ -326,13 +327,6 @@ for n=1:10
 %             S(i,j) = s;
 %         end
 %     end
-
-  S= cov(Tra_cell{n}-xmeans(n,:));%[196,196]ÀàĞÍÒ»ÖĞËùÓĞÑù±¾µÄĞ­·½²î¡£
-    %ÇóSµÄÄæ¾ØÕó
-    S_ = pinv(S);   %ÇóÄæº¯Êıpinv
-    dets = det(S);  %ÇóĞĞÁĞÊ½µÄÖµ£¬º¯Êıdet
-    % ÇóÅĞ±ğº¯Êı
-%     feature = [Tra_cell{7}(3,:)];
     for i = 1:long^2
         if feature(i)>0.1
             x(i) = 1;
@@ -345,6 +339,17 @@ for n=1:10
           xmeans_g(n,i) = 0;
         end
     end
+   [val,pos]= find(Tra_cell{n}>0.1);
+   copy=Tra_cell{n};
+   copy(val,pos)=1;
+    
+
+  S= cov(copy-xmeans_g(n,:));%[196,196]ÀàĞÍÒ»ÖĞËùÓĞÑù±¾µÄĞ­·½²î¡£
+    %ÇóSµÄÄæ¾ØÕó
+    S_ = pinv(S);   %ÇóÄæº¯Êıpinv
+    dets = det(S);  %ÇóĞĞÁĞÊ½µÄÖµ£¬º¯Êıdet
+    % ÇóÅĞ±ğº¯Êı
+%     feature = [Tra_cell{7}(3,:)];
     for i = 1:long^2
         x(i) = x(i) - xmeans_g(n,i);
     end
@@ -353,10 +358,11 @@ for n=1:10
     t2 = log(pw(n));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
-result = [result;hx(n)];
+    result(kkk,n)=hx(n);
+end
 [tem,num] = max(hx);
 num
-end
+
 end
 result
 [tem,num] = max(hx);    %ÕÒµ½ÆäÖĞµÄ×î´óÖµ
