@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% 对train数据进行排序
 train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
 flg=1;
-% figure();%PLOT
+figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
 
-% subplot(3,4,kk)
-% hold on 
-% mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
-% title(['数字',num2str(kk-1,'%d'),'提取的特征']);
+subplot(3,4,kk)
+hold on 
+mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
+title(['数字',num2str(kk-1,'%d'),'提取的特征']);
 end
 
 %% 求样品平均值
@@ -301,7 +301,7 @@ end
 
 result=[];
 for kkk =1:10
-%      feature = [Tra_cell{kkk}(3,:)];
+%      feature = [Tra_cell{kkk}(2,:)];
      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%每一类中的样本个数
@@ -333,20 +333,20 @@ for n=1:10
     dets = det(S);  %求行列式的值，函数det
     % 求判别函数
 %     feature = [Tra_cell{7}(3,:)];
+%     for i = 1:long^2
+%         if feature(i)>0.1
+%             x(i) = 1;
+%         else
+%             x(i) = 0;
+%         end
+%          if xmeans(n,i)>0.1
+%             xmeans_g(n,i) = 1;
+%         else
+%           xmeans_g(n,i) = 0;
+%         end
+%     end
     for i = 1:long^2
-        if feature(i)>0.1
-            x(i) = 1;
-        else
-            x(i) = 0;
-        end
-         if xmeans(n,i)>0.1
-            xmeans_g(n,i) = 1;
-        else
-          xmeans_g(n,i) = 0;
-        end
-    end
-    for i = 1:long^2
-        x(i) = x(i) - xmeans_g(n,i);
+        x(i) = feature(i) - xmeans(n,i);
     end
     t = x*S_;
     t1 = t*x';
