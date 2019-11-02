@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% 对train数据进行排序
 train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
 flg=1;
-% figure();%PLOT
+figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
-% 
-% subplot(3,4,kk)
-% hold on 
-% mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
-% title(['数字',num2str(kk-1,'%d'),'提取的特征']);
+
+subplot(3,4,kk)
+hold on 
+mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
+title(['数字',num2str(kk-1,'%d'),'提取的特征']);
 end
 
 %% 求样品平均值
@@ -302,7 +302,8 @@ end
 
 result=[];
 for kkk =1:10
-     feature = [Tra_cell{kkk}(3,:)];
+    
+     feature = [Tra_cell{kkk}(5,:)];
 %      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%每一类中的样本个数
@@ -353,7 +354,7 @@ for n=1:10
     x=feature-xmeans(n,:);
     t = x*S_;
     t1 = t*x';
-    t2 = log(pw(1));
+    t2 = log(pw(n));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
     result(kkk,n)=hx(n);

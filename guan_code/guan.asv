@@ -240,7 +240,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØÐÂÔØÈëÊý¾Ý¼¯(ÓÃÓÚ¸
 global long train
 long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼þ¼Ð£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼þ¼Ð
-num = 400;%ÔØÈëÑù±¾¸öÊý
+num = 1000;%ÔØÈëÑù±¾¸öÊý
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
@@ -280,17 +280,17 @@ pw = Px(:,3)./100;
 %% ¶ÔtrainÊý¾Ý½øÐÐÅÅÐò
 train_oder=Tr_all.train(Pos,:);%%½«Êý¾Ý¼¯°´ÕÕ0-9ÅÅÐò
 flg=1;
-% figure();%PLOT
+figure();%PLOT
 
 for kk=1:10
 Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
 Sum{kk} = sum(Tra_cell{kk});
 flg = flg+Px(kk,2);
-% 
-% subplot(3,4,kk)
-% hold on 
-% mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
-% title(['Êý×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
+
+subplot(3,4,kk)
+hold on 
+mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
+title(['Êý×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
 end
 
 %% ÇóÑùÆ·Æ½¾ùÖµ
@@ -301,8 +301,9 @@ end
 
 
 result=[];
-for kkk =1:10
-     feature = [Tra_cell{kkk}(2,:)];
+for kkk =1:100
+    key=0
+     feature = [Tra_cell{key}(5,:)];
 %      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%Ã¿Ò»ÀàÖÐµÄÑù±¾¸öÊý
@@ -327,32 +328,30 @@ for n=1:10
 %             S(i,j) = s;
 %         end
 %     end
-    for i = 1:long^2
-        if feature(i)>0.1
-            x(i) = 1;
-        else
-            x(i) = 0;
-        end
-         if xmeans(n,i)>0.1
-            xmeans_g(n,i) = 1;
-        else
-          xmeans_g(n,i) = 0;
-        end
-    end
-   [val,pos]= find(Tra_cell{n}>0.1);
+
    copy=Tra_cell{n};
-   copy(val,pos)=1;
     
 
-  S= cov(copy-xmeans_g(n,:));%[196,196]ÀàÐÍÒ»ÖÐËùÓÐÑù±¾µÄÐ­·½²î¡£
+  S= cov(xmeans(n,:));%[196,196]ÀàÐÍÒ»ÖÐËùÓÐÑù±¾µÄÐ­·½²î¡£
     %ÇóSµÄÄæ¾ØÕó
     S_ = pinv(S);   %ÇóÄæº¯Êýpinv
     dets = det(S);  %ÇóÐÐÁÐÊ½µÄÖµ£¬º¯Êýdet
     % ÇóÅÐ±ðº¯Êý
 %     feature = [Tra_cell{7}(3,:)];
-    for i = 1:long^2
-        x(i) = x(i) - xmeans_g(n,i);
-    end
+%     for i = 1:long^2
+%         if feature(i)>0.1
+%             x(i) = 1;
+%         else
+%             x(i) = 0;
+%         end
+%          if xmeans(n,i)>0.1
+%             xmeans_g(n,i) = 1;
+%         else
+%             xmeans_g(n,i)= 0;
+%         end
+%         x(i) = x(i) - xmeans_g(n,i);     
+%     end
+    x=feature-xmeans(n,:);
     t = x*S_;
     t1 = t*x';
     t2 = log(pw(n));
