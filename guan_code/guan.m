@@ -240,7 +240,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØÐÂÔØÈëÊý¾Ý¼¯(ÓÃÓÚ¸
 global long train
 long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼þ¼Ð£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼þ¼Ð
-num = 400;%ÔØÈëÑù±¾¸öÊý
+num = 1000;%ÔØÈëÑù±¾¸öÊý
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
@@ -302,8 +302,8 @@ end
 
 result=[];
 for kkk =1:10
-     feature = [Tra_cell{kkk}(2,:)];
-% %      feature= xmeans(kkk,:);
+     feature = [Tra_cell{kkk}(3,:)];
+%      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%Ã¿Ò»ÀàÖÐµÄÑù±¾¸öÊý
     
@@ -331,25 +331,26 @@ for n=1:10
    copy=Tra_cell{n};
     
 
-  S= cov(copy-xmeans(n,:));%[196,196]ÀàÐÍÒ»ÖÐËùÓÐÑù±¾µÄÐ­·½²î¡£
+  S= cov(xmeans(n,:));%[196,196]ÀàÐÍÒ»ÖÐËùÓÐÑù±¾µÄÐ­·½²î¡£
     %ÇóSµÄÄæ¾ØÕó
     S_ = pinv(S);   %ÇóÄæº¯Êýpinv
     dets = det(S);  %ÇóÐÐÁÐÊ½µÄÖµ£¬º¯Êýdet
     % ÇóÅÐ±ðº¯Êý
 %     feature = [Tra_cell{7}(3,:)];
-    for i = 1:long^2
-        if feature(i)>0.1
-            x(i) = 1;
-        else
-            x(i) = 0;
-        end
-         if xmeans(n,i)>0.1
-            xmeans_g(n,i) = 1;
-        else
-            xmeans_g(n,i)= 0;
-        end
-        x(i) = x(i) - xmeans_g(n,i);
-    end
+%     for i = 1:long^2
+%         if feature(i)>0.1
+%             x(i) = 1;
+%         else
+%             x(i) = 0;
+%         end
+%          if xmeans(n,i)>0.1
+%             xmeans_g(n,i) = 1;
+%         else
+%             xmeans_g(n,i)= 0;
+%         end
+%         x(i) = x(i) - xmeans_g(n,i);     
+%     end
+    x=feature-xmeans(n,:);
     t = x*S_;
     t1 = t*x';
     t2 = log(pw(1));
