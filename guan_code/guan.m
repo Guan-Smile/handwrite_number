@@ -1,7 +1,10 @@
 function varargout = guan(varargin)
 % GUAN MATLAB code for guan.fig
-% ²Ù×÷ËµÃ÷£¬²»»­Í¼£¬Ö±½ÓÊ¶±ğÁ¬ÈëÊı¾İ¼¯
-% »­Í¼Ê¶±ğ»­¶¨¸ñĞ´
+% ²Ù×÷ËµÃ÷£¬
+% 1.²»»­Í¼£¬ÔòÖ±½ÓÁ¬ÈëÊı¾İ¼¯²âÊÔ½á¹û
+% 2.»­Í¼Ê¶±ğÊ±£¬Èô×¼È·ÂÊ²»¸ß£¬¿É³¢ÊÔÄ£·ÂĞ´³öÍ¼Æ¬ÖĞµÄÎÄ×Ö¡£
+
+
 %      GUAN, by itself, creates a new GUAN or raises the existing
 %      singleton*.
 %
@@ -98,7 +101,7 @@ global flg style color  LineWidth im flgim wainput;   %flg´ú±í»­±Ê±êÖ¾£¬flgim´ú±
 flg = 0;  %³õÊ¼Çé¿öÏÂÊó±êÃ»ÓĞ°´ÏÂ
 style = '-';  %³õÊ¼Çé¿öÏÂÎªÏßĞÔ
 color = [0,0,0];  %³õÊ¼Çé¿öÏÂÎªºÚÉ«
- LineWidth = 10;
+ LineWidth = 15;
 im = [];   %´¢´æÍ¼Ïñ
 flgim = 1;  %»­Í¼±ÊÆôÓÃ±êÊ¶·û
 wainput = 0;
