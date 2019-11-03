@@ -1,5 +1,7 @@
 function varargout = guan(varargin)
 % GUAN MATLAB code for guan.fig
+% ²Ù×÷ËµÃ÷£¬²»»­Í¼£¬Ö±½ÓÊ¶±ğÁ¬ÈëÊı¾İ¼¯
+% »­Í¼Ê¶±ğ»­¶¨¸ñĞ´
 %      GUAN, by itself, creates a new GUAN or raises the existing
 %      singleton*.
 %
@@ -92,13 +94,14 @@ function figure1_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-global flg style color  LineWidth im flgim;   %flg´ú±í»­±Ê±êÖ¾£¬flgim´ú±í»­±Ê±êÖ¾£¬markºÍrgb´ú±íÏßĞÎºÍÑÕÉ«
+global flg style color  LineWidth im flgim wainput;   %flg´ú±í»­±Ê±êÖ¾£¬flgim´ú±í»­±Ê±êÖ¾£¬markºÍrgb´ú±íÏßĞÎºÍÑÕÉ«
 flg = 0;  %³õÊ¼Çé¿öÏÂÊó±êÃ»ÓĞ°´ÏÂ
 style = '-';  %³õÊ¼Çé¿öÏÂÎªÏßĞÔ
 color = [0,0,0];  %³õÊ¼Çé¿öÏÂÎªºÚÉ«
  LineWidth = 10;
 im = [];   %´¢´æÍ¼Ïñ
 flgim = 1;  %»­Í¼±ÊÆôÓÃ±êÊ¶·û
+wainput = 0;
 
 
 % --- Executes on mouse press over figure background, over a disabled or
@@ -152,7 +155,7 @@ function pushbutton2_Callback(hObject, eventdata, handles) %%ÌáÈ¡ÌØÕ÷
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global im flgim feature
-global long   %%ÉèÖÃÌØÕ÷´óĞ¡
+global long  wainput  %%ÉèÖÃÌØÕ÷´óĞ¡
 long = 14;%¸Älong
 set(handles.axes1,'visible','off');
 str= getframe(handles.axes1);
@@ -164,6 +167,7 @@ im = im2bw(im);
 imwrite(im,'untitled.bmp');
 im = imread('untitled.bmp');   %ÖØĞÂ»ñµÃim
 feature = Getfeature_g(im,long);
+wainput =1;
 str=[];
 xx=['¡õ','¡õ','¡õ','¡õ','¡õ','¡õ';'¡õ','¡õ','¡õ','¡õ','¡õ','¡õ';'¡õ','¡õ','¡õ','¡õ','¡õ','¡õ';'¡õ','¡õ','¡õ','¡õ','¡õ','¡õ';'¡õ','¡õ','¡õ','¡õ','¡õ','¡õ';'¡õ','¡õ','¡õ','¡õ','¡õ','¡õ'];
 set(handles.edit3,'string',xx);
@@ -240,7 +244,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØĞÂÔØÈëÊı¾İ¼¯(ÓÃÓÚ¸
 global long train
 long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼ş¼Ğ£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼ş¼Ğ
-num = 6000;%ÔØÈëÑù±¾¸öÊı
+num = 1000;%ÔØÈëÑù±¾¸öÊı
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
@@ -251,7 +255,7 @@ end
 labels = loadMNISTLabels(filename);
 disp(labels(1:10));
 train_label = labels(1:num);
-save(['C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train_true2.mat'],'train','train_label')%±£´æĞÂµÄÑµÁ·Êı¾İ¼¯ºÏ²âÊÔÊı¾İ¼¯
+% save(['C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train_true3.mat'],'train','train_label')%±£´æĞÂµÄÑµÁ·Êı¾İ¼¯ºÏ²âÊÔÊı¾İ¼¯
 %load('../data.mat')
 
 % --- Executes on button press in pushbutton4.
@@ -261,123 +265,10 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%Êı×ÖÊ¶±ğ
 % handles    structure with handles and user data (see GUIDATA)
 %% ×îĞ¡´íÎó¸ÅÂÊµÄBayes·½·¨
 % --------------------------------------------------------------------
-global feature long
-Tr_all=load('C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train_true2.mat');
-num_all_X=long^2;
-x = zeros(1,num_all_X);    %´ı²âÑùÆ·
-xmeans = zeros(1,num_all_X);   %ÑùÆ·µÄ¾ùÖµ
- S = zeros(num_all_X,num_all_X);   %Ğ­·½²î¾ØÕó
-S_ =zeros(num_all_X,num_all_X);   %SµÄÄæ¾ØÕó
-pw = zeros(1,10);    %ÏÈÑé¸ÅÂÊP(wj)=n(i)/N
-hx = zeros(1,10);   %ÅĞ±ğº¯Êı
-t = zeros(1,num_all_X);
-mode = [];
-N = 0;
-%% ÇóÏÈÑé¸ÅÂÊ
-[Cls,Pos ]=sort(Tr_all.train_label);
-Px=tabulate(Cls)  
-pw = Px(:,3)./100;
-%% ¶ÔtrainÊı¾İ½øĞĞÅÅĞò
-train_oder=Tr_all.train(Pos,:);%%½«Êı¾İ¼¯°´ÕÕ0-9ÅÅĞò
-flg=1;
-figure();%PLOT
+global feature long wainput
 
-for kk=1:10
-Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
-Sum{kk} = sum(Tra_cell{kk});
-flg = flg+Px(kk,2);
+[all_res,M_suc] = BayesLeasterror(feature,long,wainput) %wainput=0ÎªÎŞÍâ²¿ÊäÈë¡£
 
-subplot(3,4,kk)
-hold on 
-mesh(reshape(Sum{kk},long,long));%%»æÖÆÌØÕ÷ÌáÈ¡Í¼Ïñ
-title(['Êı×Ö',num2str(kk-1,'%d'),'ÌáÈ¡µÄÌØÕ÷']);
-end
-
-%% ÇóÑùÆ·Æ½¾ùÖµ
-for num = 1:10  %Êı×ÖÀà1-10
-%     pnum = Px(num,2);%Ã¿Ò»ÀàÖĞµÄÑù±¾¸öÊı
-    xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}ÖĞÒÑ¾­½øĞĞ³ıµ±Ç°ÀàÑù±¾Êı
-end
-
-
-result=[];
-all_res=zeros(10,10)
-for kkkk = 1:10
-for kkk =1:50
-     feature = Tra_cell{kkkk}(kkk+22,:);
-%      feature= xmeans(kkk,:);
-for n=1:10
-     pnum = Px(n,2);%Ã¿Ò»ÀàÖĞµÄÑù±¾¸öÊı
-    
-%     %ÇóĞ­·½²î
-%     for i = 1:pnum  %~=1-10
-%         for j = 1:long^2 % 1:196
-%             if Tra_cell{n}(i,j)>0.1
-%                 mode(i,j) = 1.04;
-%             else
-%                 mode(i,j) = 0;
-%             end
-%         end
-%     end
-%     for i = 1:long^2
-%         for j = 1:long^2
-%             s = 0;
-%             for k = 1:pnum
-%                 s = s+(mode(k,i)-xmeans(i))*(mode(k,j)-xmeans(j)); 
-%             end
-%             s = s/(pnum - 1);
-%             S(i,j) = s;
-%         end
-%     end
-
-   copy=Tra_cell{n};
-    
-
-  S= cov(xmeans(n,:));%[196,196]ÀàĞÍÒ»ÖĞËùÓĞÑù±¾µÄĞ­·½²î¡£
-    %ÇóSµÄÄæ¾ØÕó
-    S_ = pinv(S);   %ÇóÄæº¯Êıpinv
-    dets = det(S);  %ÇóĞĞÁĞÊ½µÄÖµ£¬º¯Êıdet
-    % ÇóÅĞ±ğº¯Êı
-%     feature = [Tra_cell{7}(3,:)];
-%     for i = 1:long^2
-%         if feature(i)>0.1
-%             x(i) = 1;
-%         else
-%             x(i) = 0;
-%         end
-%          if xmeans(n,i)>0.1
-%             xmeans_g(n,i) = 1;
-%         else
-%             xmeans_g(n,i)= 0;
-%         end
-%         x(i) = x(i) - xmeans_g(n,i);     
-%     end
-    x=feature-xmeans(n,:);
-    t = x*S_;
-    t1 = t*x';
-    t2 = log(pw(1));
-    t3 = log(dets+1);
-    hx(n) = -t1/2+t2-t3/2;
-    result(kkk,n)=hx(n);
-   
-end
-[tem,num] = max(hx);
-
-succ(kkk)=num;
-
-end
-result;
-Res = tabulate(succ);
-all_res(1:size(Res,1),kkkk) = Res(:,3)
-end
-[tem,num] = max(hx);    %ÕÒµ½ÆäÖĞµÄ×î´óÖµ
-num = num-1;
-
-str = num2str(num);
-str = ['Ó¦ÓÃ×îĞ¡´íÎóÂÊµÄBayes·½·¨Ê¶±ğ½á¹û£º' str];
-msgbox(str,'½á¹û£º');
- save('result.mat','all_res')
-mean(diag(all_res))
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)

@@ -251,7 +251,7 @@ end
 labels = loadMNISTLabels(filename);
 disp(labels(1:10));
 train_label = labels(1:num);
-save([PathName,'data_train.mat'],'train','train_label')%保存新的训练数据集合测试数据集
+save(['C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat'],'train','train_label')%保存新的训练数据集合测试数据集
 %load('../data.mat')
 
 % --- Executes on button press in pushbutton4.
@@ -261,122 +261,8 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
 % handles    structure with handles and user data (see GUIDATA)
 %% 最小错误概率的Bayes方法
 % --------------------------------------------------------------------
-global feature long
-Tr_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train.mat');
-num_all_X=long^2;
-x = zeros(1,num_all_X);    %待测样品
-xmeans = zeros(1,num_all_X);   %样品的均值
- S = zeros(num_all_X,num_all_X);   %协方差矩阵
-S_ =zeros(num_all_X,num_all_X);   %S的逆矩阵
-pw = zeros(1,10);    %先验概率P(wj)=n(i)/N
-hx = zeros(1,10);   %判别函数
-t = zeros(1,num_all_X);
-mode = [];
-N = 0;
-%% 求先验概率
-[Cls,Pos ]=sort(Tr_all.train_label);
-Px=tabulate(Cls)  
-pw = Px(:,3)./100;
-%% 对train数据进行排序
-train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
-flg=1;
-figure();%PLOT
-
-for kk=1:10
-Tra_cell{kk}=train_oder(flg:flg+Px(kk,2)-1,:);
-Sum{kk} = sum(Tra_cell{kk});
-flg = flg+Px(kk,2);
-
-subplot(3,4,kk)
-hold on 
-mesh(reshape(Sum{kk},long,long));%%绘制特征提取图像
-title(['数字',num2str(kk-1,'%d'),'提取的特征']);
-end
-
-%% 求样品平均值
-for num = 1:10  %数字类1-10
-%     pnum = Px(num,2);%每一类中的样本个数
-    xmeans(num,:) = Sum{num}./Px(num,2);%% Sum{kk}中已经进行除当前类样本数
-end
-
-
-result=[];
-all_res=zeros(10,10)
-for kkkk = 1:10
-for kkk =1:50
-     feature = Tra_cell{kkkk}(kkk+22,:);
-%      feature= xmeans(kkk,:);
-for n=1:10
-     pnum = Px(n,2);%每一类中的样本个数
-    
-%     %求协方差
-%     for i = 1:pnum  %~=1-10
-%         for j = 1:long^2 % 1:196
-%             if Tra_cell{n}(i,j)>0.1
-%                 mode(i,j) = 1.04;
-%             else
-%                 mode(i,j) = 0;
-%             end
-%         end
-%     end
-%     for i = 1:long^2
-%         for j = 1:long^2
-%             s = 0;
-%             for k = 1:pnum
-%                 s = s+(mode(k,i)-xmeans(i))*(mode(k,j)-xmeans(j)); 
-%             end
-%             s = s/(pnum - 1);
-%             S(i,j) = s;
-%         end
-%     end
-
-   copy=Tra_cell{n};
-    
-
-  S= cov(xmeans(n,:));%[196,196]类型一中所有样本的协方差。
-    %求S的逆矩阵
-    S_ = pinv(S);   %求逆函数pinv
-    dets = det(S);  %求行列式的值，函数det
-    % 求判别函数
-%     feature = [Tra_cell{7}(3,:)];
-%     for i = 1:long^2
-%         if feature(i)>0.1
-%             x(i) = 1;
-%         else
-%             x(i) = 0;
-%         end
-%          if xmeans(n,i)>0.1
-%             xmeans_g(n,i) = 1;
-%         else
-%             xmeans_g(n,i)= 0;
-%         end
-%         x(i) = x(i) - xmeans_g(n,i);     
-%     end
-    x=feature-xmeans(n,:);
-    t = x*S_;
-    t1 = t*x';
-    t2 = log(pw(1));
-    t3 = log(dets+1);
-    hx(n) = -t1/2+t2-t3/2;
-    result(kkk,n)=hx(n);
-   
-end
-[tem,num] = max(hx);
-
-succ(kkk)=num;
-
-end
-result;
-Res = tabulate(succ);
-all_res(1:size(Res,1),kkkk) = Res(:,3)
-end
-[tem,num] = max(hx);    %找到其中的最大值
-num = num-1;
-
-str = num2str(num);
-str = ['应用最小错误率的Bayes方法识别结果：' str];
-msgbox(str,'结果：');
- save('result.mat','all_res')
+global feature long wainput
+[all_res,M_suc] = BayesLeasterror(feature,long,wainput) %wainput=0为无外部输入。
 
 
 % --- Executes on selection change in popupmenu1.
