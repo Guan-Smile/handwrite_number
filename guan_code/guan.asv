@@ -301,9 +301,10 @@ end
 
 
 result=[];
-for kkk =1:100
-    key=0
-     feature = [Tra_cell{key}(5,:)];
+all_res=zeros(10,10)
+for kkkk = 1:10
+for kkk =1:50
+     feature = Tra_cell{kkkk}(kkk+22,:);
 %      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%每一类中的样本个数
@@ -354,23 +355,28 @@ for n=1:10
     x=feature-xmeans(n,:);
     t = x*S_;
     t1 = t*x';
-    t2 = log(pw(n));
+    t2 = log(pw(1));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
     result(kkk,n)=hx(n);
+   
 end
 [tem,num] = max(hx);
-num
+
+succ(kkk)=num;
 
 end
-result
+result;
+Res = tabulate(succ);
+all_res(1:size(Res,1),kkkk) = Res(:,3)
+end
 [tem,num] = max(hx);    %找到其中的最大值
 num = num-1;
 
 str = num2str(num);
 str = ['应用最小错误率的Bayes方法识别结果：' str];
 msgbox(str,'结果：');
-
+ save('result.mat','all_res')
 
 
 % --- Executes on selection change in popupmenu1.

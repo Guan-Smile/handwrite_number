@@ -240,7 +240,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)%%ÖØĞÂÔØÈëÊı¾İ¼¯(ÓÃÓÚ¸
 global long train
 long = 14;%¸Älong
 directory = uigetdir('','Ñ¡ÔñÖ¸¶¨ÎÄ¼ş¼Ğ£º');%µ¯³ö¶Ô»°¿òÊÖ¶¯Ö¸¶¨ÎÄ¼ş¼Ğ
-num = 1000;%ÔØÈëÑù±¾¸öÊı
+num = 6000;%ÔØÈëÑù±¾¸öÊı
 train =zeros(num,long^2);
 for i = 1:num
 filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
@@ -251,7 +251,7 @@ end
 labels = loadMNISTLabels(filename);
 disp(labels(1:10));
 train_label = labels(1:num);
-save([PathName,'data_train.mat'],'train','train_label')%±£´æĞÂµÄÑµÁ·Êı¾İ¼¯ºÏ²âÊÔÊı¾İ¼¯
+save(['C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train_true2.mat'],'train','train_label')%±£´æĞÂµÄÑµÁ·Êı¾İ¼¯ºÏ²âÊÔÊı¾İ¼¯
 %load('../data.mat')
 
 % --- Executes on button press in pushbutton4.
@@ -262,7 +262,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%Êı×ÖÊ¶±ğ
 %% ×îĞ¡´íÎó¸ÅÂÊµÄBayes·½·¨
 % --------------------------------------------------------------------
 global feature long
-Tr_all=load('C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train.mat');
+Tr_all=load('C:/Users/Think/Desktop/»ª¹¤Ò»Äê¼¶/¿Î³ÌÏà¹Ø/Ä£Ê½Ê¶±ğ/ÊÖĞ´Êı×Ö¿â/handwrite_number/data_train_true2.mat');
 num_all_X=long^2;
 x = zeros(1,num_all_X);    %´ı²âÑùÆ·
 xmeans = zeros(1,num_all_X);   %ÑùÆ·µÄ¾ùÖµ
@@ -301,9 +301,10 @@ end
 
 
 result=[];
-for kkk =1:10
-    
-     feature = [Tra_cell{kkk}(5,:)];
+all_res=zeros(10,10)
+for kkkk = 1:10
+for kkk =1:50
+     feature = Tra_cell{kkkk}(kkk+22,:);
 %      feature= xmeans(kkk,:);
 for n=1:10
      pnum = Px(n,2);%Ã¿Ò»ÀàÖĞµÄÑù±¾¸öÊı
@@ -354,24 +355,29 @@ for n=1:10
     x=feature-xmeans(n,:);
     t = x*S_;
     t1 = t*x';
-    t2 = log(pw(n));
+    t2 = log(pw(1));
     t3 = log(dets+1);
     hx(n) = -t1/2+t2-t3/2;
     result(kkk,n)=hx(n);
+   
 end
 [tem,num] = max(hx);
-num
+
+succ(kkk)=num;
 
 end
-result
+result;
+Res = tabulate(succ);
+all_res(1:size(Res,1),kkkk) = Res(:,3)
+end
 [tem,num] = max(hx);    %ÕÒµ½ÆäÖĞµÄ×î´óÖµ
 num = num-1;
 
 str = num2str(num);
 str = ['Ó¦ÓÃ×îĞ¡´íÎóÂÊµÄBayes·½·¨Ê¶±ğ½á¹û£º' str];
 msgbox(str,'½á¹û£º');
-
-
+ save('result.mat','all_res')
+mean(diag(all_res))
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)

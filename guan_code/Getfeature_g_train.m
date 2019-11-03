@@ -10,7 +10,7 @@ feature = zeros(1,long^2);
 for i=1:1:long %从第一行开始
     for j=1:1:long  %从第一列开始
        
-                if im(i,j)<115   % 如果是黑色（有输入的区域）~=255
+                if im(i,j)<255   % 如果是黑色（有输入的区域）~=255
                     count=count+1;
                 end
   
