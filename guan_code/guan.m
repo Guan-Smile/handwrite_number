@@ -27,7 +27,7 @@ function varargout = guan(varargin)
 
 % Edit the above text to modify the response to help guan
 
-% Last Modified by GUIDE v2.5 06-Nov-2019 15:56:00
+% Last Modified by GUIDE v2.5 01-Nov-2019 10:15:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -310,34 +310,3 @@ if ~isequal([pathname,filename],[0,0])
     axes(handles.axes1);
     imshow(src_img);
 end
-
-
-% --- Executes on button press in pushbutton6.
-function pushbutton6_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton6 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global feature flgim
-Tr_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true2.mat');
-
-ret = inputdlg({'请输入该样本对应数字'},'样本类型' );
-%%%% a 输入数据的值
-shuzi= str2double(char(ret(1)));
-if shuzi>=0 && shuzi<=9 && shuzi == fix(shuzi)
-else
-    warndlg('请输入 0--9 的整数！','输入错误：');
-    return;
-end
-Tr_all.train(end+1,:)=feature;
-train = Tr_all.train;
-Tr_all.train_label(end+1)=shuzi;
-train_label = Tr_all.train_label;
-
-save('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat','train','train_label');
-str = num2str(size(Tr_all.train_label(shuzi+1),2));
-str = ['样本数：' str];
-msgbox('导入数据集成功');
-
-cla(handles.axes1);
-set(handles.edit3,'string','');
-flgim=1;
