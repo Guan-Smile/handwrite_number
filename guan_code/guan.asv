@@ -251,7 +251,7 @@ filepath = fullfile(directory,['Testimage_' num2str(i,'%d') '.bmp']);
 fid = imread(filepath);%打开文件
 train(i,:)= Getfeature_g_train(fid,long);
 end
-[filename,PathName] = uigetfile('*.*','选择测试图片标签 文件t10k-images.idx3-ubyte');
+[filename,PathName] = uigetfile('*.*','选择测试图片标签文件t10k-images.idx3-ubyte');
 labels = loadMNISTLabels(filename);
 disp(labels(1:10));
 train_label = labels(1:num);
