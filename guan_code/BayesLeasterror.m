@@ -1,7 +1,7 @@
 function [all_res,M_suc] = BayesLeasterror(feature,long,waibuinput)
 
-Tr_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat');%data_train_true2.mat');
-Test_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat');
+Tr_all=load('../data_train_true3.mat');%data_train_true2.mat');
+Test_all=load('../data_train_test3.mat');
 num_all_X=long^2;
 x = zeros(1,num_all_X);    %待测样品
 xmeans = zeros(1,num_all_X);   %样品的均值
