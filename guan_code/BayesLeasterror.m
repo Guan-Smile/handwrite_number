@@ -72,7 +72,8 @@ for i = 1: long^2
     end
 end
 
-
+% S_all(n,:,:) = S;
+% save('S_all.mat','S_all')
     %求S的逆矩阵
     S_ = pinv(S);   %求逆函数pinv
     dets = det(S);  %求行列式的值，函数det

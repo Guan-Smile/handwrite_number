@@ -1,4 +1,4 @@
-function [all_res,M_suc] = BayesLeasterror(feature,long,waibuinput)
+function [all_res,M_suc] = BayesLeasterror_esay(feature,long,waibuinput)
 
 Tr_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat');%data_train_true2.mat');
 Test_all=load('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/data_train_true3.mat');
@@ -54,25 +54,26 @@ for kkk =1:50
      feature = Test_cell{kkkk}(kkk+22,:);
     end
 %      feature= xmeans(kkk,:);
+S_all = load('S_all.mat')
 for n=1:10
      pnum = Px(n,2);%每一类中的样本个数
    copy=Tra_cell{n}-xmeans(n,:);
    
 %   S= cov(xmeans(n,:));%[196,196]类型一中所有样本的协方差。
 s=0;
-for i = 1: long^2
-    for j = 1:long^2
-        for cut= 1:pnum
-%         s = s + (Tra_cell{n}(cut,i)-xmeans(n,i))*(Tra_cell{n}(cut,j)-xmeans(n,j));
-        s = s + copy(cut,i)*copy(cut,j);
-        end 
-        s=s/(pnum-1);
-        S(i,j)=s;
-        s=0;
-    end
-end
-
-S_all = S
+% for i = 1: long^2
+%     for j = 1:long^2
+%         for cut= 1:pnum
+% %         s = s + (Tra_cell{n}(cut,i)-xmeans(n,i))*(Tra_cell{n}(cut,j)-xmeans(n,j));
+%         s = s + copy(cut,i)*copy(cut,j);
+%         end 
+%         s=s/(pnum-1);
+%         S(i,j)=s;
+%         s=0;
+%     end
+% end
+S = squeeze(S_all(n,:,:)) ;
+save('S_all.mat','S_all')
     %求S的逆矩阵
     S_ = pinv(S);   %求逆函数pinv
     dets = det(S);  %求行列式的值，函数det
