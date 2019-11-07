@@ -267,7 +267,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
 % --------------------------------------------------------------------
 global feature long wainput
 
-[all_res,M_suc] = BayesLeasterror_easy(feature,long,wainput) %wainput=0为无外部输入。
+[all_res,M_suc] = BayesLeasterror_esay(feature,long,wainput) %wainput=0为无外部输入。
 
 
 % --- Executes on selection change in popupmenu1.
