@@ -98,7 +98,7 @@ global flg style color  LineWidth im flgim wainput;   %flg´ú±í»­±Ê±êÖ¾£¬flgim´ú±
 flg = 0;  %³õÊ¼Çé¿öÏÂÊó±êÃ»ÓĞ°´ÏÂ
 style = '-';  %³õÊ¼Çé¿öÏÂÎªÏßĞÔ
 color = [0,0,0];  %³õÊ¼Çé¿öÏÂÎªºÚÉ«
- LineWidth = 15;
+ LineWidth = 10;
 im = [];   %´¢´æÍ¼Ïñ
 flgim = 1;  %»­Í¼±ÊÆôÓÃ±êÊ¶·û
 wainput = 0;

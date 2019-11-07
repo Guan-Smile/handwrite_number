@@ -38,10 +38,12 @@ for i=1:1:long %从第一行开始
             for n=(j-1)*h+1:j*h  
                 if im(m,n)==0   % 如果是黑色（有输入的区域）
                     count=count+1;
+                    feature(k)=1;
                 end
             end
         end
-        feature(k)=count/(w*h);  %第k个特征分量  无输入区域特征值为0
+%         feature(k)=count/(w*h);  %第k个特征分量  无输入区域特征值为0
+         
         count=0;
         k=k+1;
     end
