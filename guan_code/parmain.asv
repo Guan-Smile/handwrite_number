@@ -53,9 +53,10 @@ for i=1:samp_test
     end
 end
 suc = [suc count/samp_test];
+
 end
 
 plot(h,suc,'-')
-legend('sample_num==1000');
-xlabel = ('h')
-    title('Parzen窗法识别准确率');
+legend('N(0, 1)', 'N = 1', 'N = 16', 'N = 256');
+
+    title('Parzen窗法准确率');
