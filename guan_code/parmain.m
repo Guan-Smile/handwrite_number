@@ -17,8 +17,8 @@ train_oder=Tr_all.train(Pos,:);%%将数据集按照0-9排序
 test_order = Test_all.train(Pos_test,:);
 flg=1;
 flg_test=1;
-samp_test =1000;
-test = Test_all.train(1:samp_test,:);% 取前五个样本，1-3项特征 
+samp_test =50;
+% test = Test_all.train(1:samp_test,:);% 取前五个样本，1-3项特征 
 test_true_lable = Test_all.train_label(1:samp_test);
 
 for kk=1:10
@@ -41,21 +41,35 @@ h=[1, 4, 8, 16, 32, 64, 128, 256];
 
 suc = [];
 for c_h = 1:length(h)
-    count=0;
-for i=1:samp_test
+
+    for kkk = 1:10     
+        count=0;
+         for i=1:samp_test
+    
+    test(i,:) = Test_cell{kkk}(i,:);
     r=parzen(w,h(c_h),test(i,:));
     result=find(r==max(r));
     X=['点[',num2str(test(i,:)),']落在三个类别的概率分别为：',num2str(r)];
     Y=['因此，点[',num2str(test(i,:)),']落在第',num2str(result),'类,正确为第',num2str(test_true_lable(i)+1),'类'];
 %     disp(X);disp(Y);disp(' ');
-    if ( num2str(result)== num2str(test_true_lable(i))+1)
+% result
+    if (result== kkk)
     count = count +1;
     end
-end
+         end
 suc = [suc count/samp_test];
+    end
+    
 end
-
-plot(h,suc,'-')
-legend('sample_num==1000');
-xlabel = ('h')
-    title('Parzen窗法识别准确率');
+suc_plot = reshape(suc,8,[]);
+figure 
+plot(1:8,suc_plot,'-*')
+legend('数字0识别正确','数字1识别正确','数字2识别正确','数字3识别正确','数字4识别正确','数字5识别正确','数字6识别正确','数字7识别正确','数字8识别正确','数字9识别正确');
+xlabel('h参数的值分别为=[1, 4, 8, 16, 32, 64, 128, 256]')
+ylabel('判别准确率%')
+title('Parzen窗法识别准确率');
+    
+%     save('zuoye2res.mat',suc);
+hold on
+M_p = mean(suc_plot,2);
+plot(1:8,M_p,'-kP')

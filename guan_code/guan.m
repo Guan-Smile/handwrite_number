@@ -279,6 +279,18 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu1
 
+global long
+val = get(handles.popupmenu1,'value');
+switch val
+    case 1
+        
+    case 2
+       
+    case 3
+        res_zuoye2 =  parzenfun(long);
+end
+        
+
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
@@ -291,6 +303,8 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+set(hObject,'string',{'选择算法';'贝叶斯最小错误率';'Parzen窗法';'线性'});
 
 
 % --- Executes on button press in pushbutton5.
