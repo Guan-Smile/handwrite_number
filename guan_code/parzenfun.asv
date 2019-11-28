@@ -1,4 +1,4 @@
-function [result] = parzenfun(feature,long,wainput)
+function [M_p] = parzenfun(feature,long,wainput)
 %% parmain
 Tr_all=load('../data_train_true3.mat');%data_train_true2.mat');
 Test_all=load('../data_train_test3.mat');
@@ -40,9 +40,8 @@ h=[1, 4, 8, 16, 32, 64, 128, 256];
 % i 为测试集个数
 
 suc = [];
-
-if (wainput~=1)
 for c_h = 1:length(h)
+
     for kkk = 1:10     
         count=0;
         
@@ -63,8 +62,10 @@ for c_h = 1:length(h)
          end
 suc = [suc count/samp_test];
 disp('please waiting..........')
-    end   
+    end
+    
 end
+
 
 suc_plot = reshape(suc,8,[]);
 figure 
@@ -78,12 +79,4 @@ hold on
 M_p = mean(suc_plot,2);
 plot(1:8,M_p,'-kP')
 legend('数字0识别正确','数字1识别正确','数字2识别正确','数字3识别正确','数字4识别正确','数字5识别正确','数字6识别正确','数字7识别正确','数字8识别正确','数字9识别正确','平均');
-else
-    c_h=3;%调整h参数的值
-     r=parzen(w,h(c_h),feature);
-     result=find(r==max(r));
-    X=['判断为：',num2str(result)-1];
-    disp(X);
-end
-
 end

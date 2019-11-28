@@ -119,7 +119,7 @@ str = num2str(num(end));
 str = ['应用最小错误率的Bayes方法识别结果：' str];
 msgbox(str,'结果：');
 all_res=tem;
-
+disp(['应用最小错误率的Bayes方法识别结果：' str])
 M_suc = num;
 end
-disp(['可能出现的字符：',num2str(M_suc)])
+ 

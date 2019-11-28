@@ -265,10 +265,31 @@ function pushbutton4_Callback(hObject, eventdata, handles)%%数字识别
 % handles    structure with handles and user data (see GUIDATA)
 %% 最小错误概率的Bayes方法
 % --------------------------------------------------------------------
-global feature long wainput
+global feature long wainput method
 
-[all_res,M_suc] = BayesLeasterror_esay(feature,long,wainput) %wainput=0为无外部输入。
-
+ switch(method)
+                case 'BayesLeasterror_esay'
+                    [all_res,M_suc] = BayesLeasterror_esay(feature,long,wainput); %wainput=0为无外部输入。
+                case 'flda'
+                    fisher = FLDA(Y, X);
+                    model = fisher;
+                case 'swlda'
+                    [b,se,pval,inmodel,stats,nextstep,history] = stepwisefit(X,Y,'penter',0.10,'premove',0.15,'scale','on','display','off');
+                    swlda.b = b;
+                    swlda.b0 = stats.intercept;
+                    model = swlda;
+                case 'svm'
+                    svmoption = ['-s 0 -t 0 -c 1 -g 0.001'];
+                    svmmodel = svmtrain(Y,X,svmoption);
+                    model = svmmodel;
+                case 'parzen'
+                    wainput = 1;
+                    res_zuoye2 =  parzenfun(feature,long,wainput);
+                    str = ['应用parzen窗方法识别结果：' num2str(res_zuoye2)-1];
+                    msgbox(str,'结果：');
+                    
+                    
+ end
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
@@ -279,15 +300,18 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu1
 
-global long
+global long method
 val = get(handles.popupmenu1,'value');
 switch val
     case 1
+        msgbox('请选择算法：');
         
     case 2
+        method = 'BayesLeasterror_esay';
        
     case 3
-        res_zuoye2 =  parzenfun(long);
+         method = 'parzen';
+%         res_zuoye2 =  parzenfun(long);
 end
         
 
