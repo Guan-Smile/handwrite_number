@@ -89,7 +89,7 @@ num = num-1;
 str = num2str(num);
 str = ['应用最小错误率的Bayes方法识别结果：' str];
 msgbox(str,'结果：');
- save('C:/Users/Think/Desktop/华工一年级/课程相关/模式识别/手写数字库/handwrite_number/result.mat','all_res')
+ save('result.mat','all_res')
 M_suc=mean(diag(all_res))
 else  %%%%%%%%%%有外部输入的情况
     S_read = load('S_all.mat');
