@@ -271,11 +271,8 @@ global feature long wainput method
                 case 'BayesLeasterror_esay'
                     [all_res,M_suc] = BayesLeasterror_esay(feature,long,wainput); %wainput=0为无外部输入。
                 case 'flda'
-                  res_zuoye3 = flda_guan(feature,long,wainput);
-                   str = ['应用flda窗方法识别结果：' num2str(res_zuoye3)-1];
-                    msgbox(str,'结果：');
-                    
-                  
+                    fisher = FLDA(Y, X);
+                    model = fisher;
 %                 case 'swlda'
 %                     [b,se,pval,inmodel,stats,nextstep,history] = stepwisefit(X,Y,'penter',0.10,'premove',0.15,'scale','on','display','off');
 %                     swlda.b = b;
@@ -315,8 +312,6 @@ switch val
     case 3
          method = 'parzen';
 %         res_zuoye2 =  parzenfun(long);
-    case 4
-         method = 'flda';
 end
         
 
