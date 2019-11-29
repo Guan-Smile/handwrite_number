@@ -1,26 +1,25 @@
-function [result] = flda_guan(feature,long,wainput)
+function [result] = svm_guan(feature,long,wainput)
 
-%% flda 放弃
+%% parmain
 Tr_all=load('../data_train_true3.mat');%data_train_true2.mat');
 Test_all=load('../data_train_test3.mat');
-% load('svm1_model.mat')
-long =14;
-num_all_X=long^2;
-N = 0;
-
-Y = (Tr_all.train_label-5)/10;
-X = Tr_all.train;
-
-
-fisher = FLDA(Y, X);
-model = fisher;
+load('svm1_model.mat')
+% long =14;
+% num_all_X=long^2;
+% N = 0;
+% 
+% Y = (Tr_all.train_label-5)/10;
+% X = Tr_all.train;
+% 
+% 
+% fisher = FLDA(Y, X);
+% model = fisher;
 % 
 X_test = feature;
 
-Y_predict = X_test*fisher.b+fisher.b0;
-% yfit = svm1.predictFcn(X_test) ;
-% result = yfit*10+5
-
+% Y_predict = X_test*fisher.b+fisher.b0;
+yfit = svm1.predictFcn(X_test) ;
+result = yfit*10+5
 % %% 求先验概率
 % [Cls,Pos ]=sort(Tr_all.train_label);
 % Px=tabulate(Cls)  

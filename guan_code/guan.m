@@ -270,9 +270,9 @@ global feature long wainput method
  switch(method)
                 case 'BayesLeasterror_esay'
                     [all_res,M_suc] = BayesLeasterror_esay(feature,long,wainput); %wainput=0为无外部输入。
-                case 'flda'
-                  res_zuoye3 = flda_guan(feature,long,wainput);
-                   str = ['应用flda窗方法识别结果：' num2str(res_zuoye3)-1];
+                case 'svm'
+                  res_zuoye3 = svm_guan(feature,long,wainput);
+                   str = ['应用SVM分类器识别结果：' num2str(res_zuoye3)];
                     msgbox(str,'结果：');
                     
                   
@@ -281,10 +281,10 @@ global feature long wainput method
 %                     swlda.b = b;
 %                     swlda.b0 = stats.intercept;
 %                     model = swlda;
-                case 'svm'
-                    svmoption = ['-s 0 -t 0 -c 1 -g 0.001'];
-                    svmmodel = svmtrain(Y, X,svmoption);
-                    model = svmmodel;
+%                 case 'svm'
+%                     svmoption = ['-s 0 -t 0 -c 1 -g 0.001'];
+%                     svmmodel = svmtrain(Y, X,svmoption);
+%                     model = svmmodel;
                 case 'parzen'
                     wainput = 1;%当变量值为1时，判别图中字符的类别，当wainput不为1时，判别测试集中的数据。
                     res_zuoye2 =  parzenfun(feature,long,wainput);
@@ -316,7 +316,7 @@ switch val
          method = 'parzen';
 %         res_zuoye2 =  parzenfun(long);
     case 4
-         method = 'flda';
+         method = 'svm';
 end
         
 
@@ -333,7 +333,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-set(hObject,'string',{'选择算法';'贝叶斯最小错误率';'Parzen窗法';'线性'});
+set(hObject,'string',{'选择算法';'贝叶斯最小错误率';'Parzen窗法';'SVM分类器'});
 
 
 % --- Executes on button press in pushbutton5.
