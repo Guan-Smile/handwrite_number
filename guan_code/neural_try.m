@@ -40,7 +40,7 @@ yind = vec2ind(y);
 percentErrors = sum(tind ~= yind)/numel(tind)
 
 % View the Network
-% view(net)
+view(net)
 
 Y_produce = net(X_test');
 end
