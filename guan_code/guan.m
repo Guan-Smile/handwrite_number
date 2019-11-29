@@ -274,6 +274,10 @@ global feature long wainput method
                   res_zuoye3 = svm_guan(feature,long,wainput);
                    str = ['应用SVM分类器识别结果：' num2str(res_zuoye3)];
                     msgbox(str,'结果：');
+                case 'neural_pr'
+                  res_zuoye4 = neural_guan(feature,long,wainput);
+                   str = ['应用神经网络识别结果：' num2str(res_zuoye4)];
+                    msgbox(str,'结果：');
                     
                   
 %                 case 'swlda'
@@ -317,6 +321,8 @@ switch val
 %         res_zuoye2 =  parzenfun(long);
     case 4
          method = 'svm';
+    case 5
+        method = 'neural_pr';
 end
         
 
@@ -333,7 +339,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-set(hObject,'string',{'选择算法';'贝叶斯最小错误率';'Parzen窗法';'SVM分类器'});
+set(hObject,'string',{'选择算法';'贝叶斯最小错误率';'Parzen窗法';'SVM分类器';'神经网络'});
 
 
 % --- Executes on button press in pushbutton5.
